@@ -5,13 +5,13 @@ option go_package = "github.com/xhsun/grpc-file-transfer/filetransfer";
 
 service FileTransfer{
      // Store files on the server
-     rpc Store(stream File) returns (Result) {}
+     rpc Store(stream File) returns (Empty) {}
 
      // Fetch files from the server
      rpc Fetch(FileName) returns (stream FileContent) {}
  
      // Delete files from the server
-     rpc Delete(FileName) returns (Result) {}
+     rpc Delete(FileName) returns (Empty) {}
  
      // List all files on the server
      rpc ListAll(Empty) returns (FileList) {}
@@ -19,8 +19,7 @@ service FileTransfer{
 
 message File{
     string Name = 1;
-    int64 Size = 2;
-    bytes Content = 3;
+    bytes Content = 2;
 }
 
 message FileName {
@@ -28,20 +27,11 @@ message FileName {
 }
 
 message FileContent {
-    int64 Size = 1;
-    bytes Data = 2;
+    bytes Data = 1;
 }
 
 message FileList {
-    map<string, uint64> files = 1;
-}
-
-message Result{
-    enum Status{
-        Failed = 0;
-        Success = 1;
-    }
-    Status status = 1;
+    map<string, uint64> Files = 1;
 }
 
 message Empty {

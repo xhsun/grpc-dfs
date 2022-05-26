@@ -27,7 +27,7 @@ type FileTransferClient interface {
 	// Fetch files from the server
 	Fetch(ctx context.Context, in *FileName, opts ...grpc.CallOption) (FileTransfer_FetchClient, error)
 	// Delete files from the server
-	Delete(ctx context.Context, in *FileName, opts ...grpc.CallOption) (*Result, error)
+	Delete(ctx context.Context, in *FileName, opts ...grpc.CallOption) (*Empty, error)
 	// List all files on the server
 	ListAll(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*FileList, error)
 }
@@ -51,7 +51,7 @@ func (c *fileTransferClient) Store(ctx context.Context, opts ...grpc.CallOption)
 
 type FileTransfer_StoreClient interface {
 	Send(*File) error
-	CloseAndRecv() (*Result, error)
+	CloseAndRecv() (*Empty, error)
 	grpc.ClientStream
 }
 
@@ -63,11 +63,11 @@ func (x *fileTransferStoreClient) Send(m *File) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *fileTransferStoreClient) CloseAndRecv() (*Result, error) {
+func (x *fileTransferStoreClient) CloseAndRecv() (*Empty, error) {
 	if err := x.ClientStream.CloseSend(); err != nil {
 		return nil, err
 	}
-	m := new(Result)
+	m := new(Empty)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -106,8 +106,8 @@ func (x *fileTransferFetchClient) Recv() (*FileContent, error) {
 	return m, nil
 }
 
-func (c *fileTransferClient) Delete(ctx context.Context, in *FileName, opts ...grpc.CallOption) (*Result, error) {
-	out := new(Result)
+func (c *fileTransferClient) Delete(ctx context.Context, in *FileName, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/filetransfer.FileTransfer/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -133,7 +133,7 @@ type FileTransferServer interface {
 	// Fetch files from the server
 	Fetch(*FileName, FileTransfer_FetchServer) error
 	// Delete files from the server
-	Delete(context.Context, *FileName) (*Result, error)
+	Delete(context.Context, *FileName) (*Empty, error)
 	// List all files on the server
 	ListAll(context.Context, *Empty) (*FileList, error)
 	mustEmbedUnimplementedFileTransferServer()
@@ -149,7 +149,7 @@ func (UnimplementedFileTransferServer) Store(FileTransfer_StoreServer) error {
 func (UnimplementedFileTransferServer) Fetch(*FileName, FileTransfer_FetchServer) error {
 	return status.Errorf(codes.Unimplemented, "method Fetch not implemented")
 }
-func (UnimplementedFileTransferServer) Delete(context.Context, *FileName) (*Result, error) {
+func (UnimplementedFileTransferServer) Delete(context.Context, *FileName) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedFileTransferServer) ListAll(context.Context, *Empty) (*FileList, error) {
@@ -173,7 +173,7 @@ func _FileTransfer_Store_Handler(srv interface{}, stream grpc.ServerStream) erro
 }
 
 type FileTransfer_StoreServer interface {
-	SendAndClose(*Result) error
+	SendAndClose(*Empty) error
 	Recv() (*File, error)
 	grpc.ServerStream
 }
@@ -182,7 +182,7 @@ type fileTransferStoreServer struct {
 	grpc.ServerStream
 }
 
-func (x *fileTransferStoreServer) SendAndClose(m *Result) error {
+func (x *fileTransferStoreServer) SendAndClose(m *Empty) error {
 	return x.ServerStream.SendMsg(m)
 }
 

@@ -11,3 +11,9 @@ Generate Web Server’s Private Key and CSR (Certificate Signing Request)
 ```
 openssl req -newkey rsa:4096 -nodes -keyout server-key.pem -out server-req.pem -subj "/C=CA/ST=STATE/L=CITY/O=DEV/OU=EXAMPLE/CN=FILETRANSFER/emailAddress=example@example.com"
 ```
+
+
+Generate new
+```
+protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative ./filetransfer/filetransfer.proto
+```
