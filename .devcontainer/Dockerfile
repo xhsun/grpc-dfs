@@ -19,7 +19,7 @@ RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 RUN go install github.com/google/wire/cmd/wire@latest
 
-ENV PATH=PATH="$PATH:$HOME/.local/bin"
+ENV PATH="$PATH:$(go env GOPATH)/bin"
 
 # [Optional] Uncomment this line to install global node packages.
 # RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
