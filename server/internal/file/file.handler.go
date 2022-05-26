@@ -3,38 +3,40 @@ package file
 import (
 	"context"
 	"errors"
-	"fmt"
 	"io"
 	"os"
 
 	log "github.com/sirupsen/logrus"
 	pb "github.com/xhsun/grpc-file-transfer/filetransfer"
 	"github.com/xhsun/grpc-file-transfer/server/internal/config"
+	fileService "github.com/xhsun/grpc-file-transfer/server/internal/file/service"
 )
 
 type FileHandler struct {
 	pb.UnimplementedFileTransferServer
-	fileStoragePath string
-	fileChunkSize   int
+	fileServiceBuilder fileService.IFileServiceBuilder
+	fileStoragePath    string
+	fileChunkSize      int
 }
 
 // FileHandler method creates a new file handler
-func NewFileHandler(config *config.Config) *FileHandler {
+func NewFileHandler(config *config.Config, fileServiceBuilder fileService.IFileServiceBuilder) *FileHandler {
 	return &FileHandler{
-		fileStoragePath: config.FileStoragePath,
-		fileChunkSize:   config.FileChunkSize,
+		fileStoragePath:    config.FileStoragePath,
+		fileChunkSize:      config.FileChunkSize,
+		fileServiceBuilder: fileServiceBuilder,
 	}
 }
 
 // Store files on the server
 func (fh *FileHandler) Store(stream pb.FileTransfer_StoreServer) error {
-	var file *os.File
+	var fileService fileService.IFileService
 	for {
 		segment, err := stream.Recv()
 		logger := log.WithField("FileName", segment.Name)
 		if err == io.EOF {
-			if file != nil {
-				file.Sync()
+			if fileService != nil {
+				fileService.Sync()
 			}
 			logger.Info("Successfully stored given file")
 			return stream.SendAndClose(&pb.Empty{})
@@ -43,20 +45,15 @@ func (fh *FileHandler) Store(stream pb.FileTransfer_StoreServer) error {
 			log.WithError(err).Error("Encountered unexpected error while reading file segments")
 			return err
 		}
-		if file == nil {
-			if segment.Name == "" {
-				log.Error("File name cannot be empty")
-				return err
-			}
-			file, err = os.OpenFile(fmt.Sprintf(fh.fileStoragePath, segment.Name), os.O_CREATE|os.O_WRONLY, 0644)
+		if fileService == nil {
+			fileService, err = fh.fileServiceBuilder.WithFile(segment.Name, os.O_CREATE|os.O_WRONLY).Build()
 			if err != nil {
-				logger.WithError(err).Error("Encountered unexpected error while attempt to open or create file")
 				return err
 			}
-			defer file.Close()
+			defer fileService.Close()
 		}
 
-		saved, err := file.Write(segment.Content)
+		saved, err := fileService.Write(segment.Content)
 		logger.Debugf("Wrote %d bytes", saved)
 		if err != nil {
 			logger.WithError(err).Error("Encountered unexpected error while attempt to write to file")
@@ -66,21 +63,19 @@ func (fh *FileHandler) Store(stream pb.FileTransfer_StoreServer) error {
 }
 
 func (fh *FileHandler) Fetch(fileName *pb.FileName, stream pb.FileTransfer_FetchServer) error {
-	if fileName == nil || fileName.Name == "" {
+	if fileName == nil {
 		log.Error("File name cannot be empty")
-		return errors.New("File name cannot be empty")
+		return errors.New("file name cannot be empty")
 	}
 	logger := log.WithField("FileName", fileName.Name)
-
-	file, err := os.Open(fmt.Sprintf(fh.fileStoragePath, fileName.Name))
+	fileService, err := fh.fileServiceBuilder.WithFile(fileName.Name, os.O_CREATE|os.O_WRONLY).Build()
 	if err != nil {
-		logger.WithError(err).Error("Encountered unexpected error while attempt to open file")
+		return err
 	}
-	defer file.Close()
+	defer fileService.Close()
 
-	buffer := make([]byte, fh.fileChunkSize)
 	for {
-		n, err := file.Read(buffer[:cap(buffer)])
+		buffer, err := fileService.Read()
 		if err != nil {
 			if err == io.EOF {
 				logger.Info("Successfully send file content to client")
@@ -89,7 +84,6 @@ func (fh *FileHandler) Fetch(fileName *pb.FileName, stream pb.FileTransfer_Fetch
 			logger.WithError(err).Error("Encountered unexpected error while attempt to read file")
 			return err
 		}
-		buffer = buffer[:n]
 		err = stream.Send(&pb.FileContent{Data: buffer})
 		if err != nil {
 			logger.WithError(err).Error("Encountered unexpected error while attempt to send file chunk")
@@ -99,9 +93,25 @@ func (fh *FileHandler) Fetch(fileName *pb.FileName, stream pb.FileTransfer_Fetch
 }
 
 func (fh *FileHandler) Delete(ctx context.Context, fileName *pb.FileName) (*pb.Empty, error) {
+	if fileName == nil || fileName.Name == "" {
+		log.Error("File name cannot be empty")
+		return nil, errors.New("file name cannot be empty")
+	}
+
+	fileService, _ := fh.fileServiceBuilder.Build()
+	err := fileService.Remove(fileName.Name)
+	if err != nil {
+		return nil, err
+	}
+
 	return &pb.Empty{}, nil
 }
 
 func (fh *FileHandler) ListAll(ctx context.Context, empty *pb.Empty) (*pb.FileList, error) {
-	return &pb.FileList{}, nil
+	fileService, _ := fh.fileServiceBuilder.Build()
+	fileList, err := fileService.List()
+	if err != nil {
+		return nil, err
+	}
+	return &pb.FileList{Files: fileList}, nil
 }
