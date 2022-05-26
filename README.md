@@ -14,7 +14,7 @@ openssl req -newkey rsa:4096 -nodes -keyout server-key.pem -out server-req.pem -
 
 Sign the Web Server Certificate Request (CSR)
 ```
-openssl x509 -req -in server-req.pem -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial -out server-cert.pem
+openssl x509 -req -in server-req.pem -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial -out server-cert.pem -extfile server-ext.cnf
 ```
 
 See what is inside the certificate
