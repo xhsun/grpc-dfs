@@ -7,9 +7,9 @@ import (
 	"os"
 
 	log "github.com/sirupsen/logrus"
+	fileService "github.com/xhsun/grpc-file-transfer/fileservice"
 	pb "github.com/xhsun/grpc-file-transfer/filetransfer"
 	"github.com/xhsun/grpc-file-transfer/server/internal/config"
-	fileService "github.com/xhsun/grpc-file-transfer/server/internal/file/service"
 )
 
 type FileHandler struct {

@@ -8,6 +8,7 @@ package registry
 
 import (
 	"github.com/google/wire"
+	"github.com/xhsun/grpc-file-transfer/fileservice"
 	"github.com/xhsun/grpc-file-transfer/server/internal/config"
 	"github.com/xhsun/grpc-file-transfer/server/internal/file"
 	"github.com/xhsun/grpc-file-transfer/server/internal/file/service"
@@ -18,7 +19,7 @@ import (
 
 func InitializeServer(config2 *config.Config) (*server.GRPCServer, error) {
 	fileRepository := service.NewFileRepository(config2)
-	fileServiceBuilder := service.NewFileServiceBuilder(fileRepository)
+	fileServiceBuilder := fileservice.NewFileServiceBuilder(fileRepository)
 	fileHandler := file.NewFileHandler(config2, fileServiceBuilder)
 	grpcServer := server.NewGRPCServer(config2, fileHandler)
 	return grpcServer, nil
@@ -26,4 +27,4 @@ func InitializeServer(config2 *config.Config) (*server.GRPCServer, error) {
 
 // wire.go:
 
-var ServiceBuilderSet = wire.NewSet(service.NewFileRepository, wire.Bind(new(service.IFileRepository), new(*service.FileRepository)), service.NewFileServiceBuilder, wire.Bind(new(service.IFileServiceBuilder), new(*service.FileServiceBuilder)))
+var ServiceBuilderSet = wire.NewSet(service.NewFileRepository, wire.Bind(new(fileservice.IFileRepository), new(*service.FileRepository)), fileservice.NewFileServiceBuilder, wire.Bind(new(fileservice.IFileServiceBuilder), new(*fileservice.FileServiceBuilder)))

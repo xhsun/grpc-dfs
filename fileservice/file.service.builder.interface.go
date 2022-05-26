@@ -1,4 +1,4 @@
-package service
+package fileservice
 
 type IFileServiceBuilder interface {
 	//WithFile - Open a file for read/write

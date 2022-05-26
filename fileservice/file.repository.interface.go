@@ -1,4 +1,4 @@
-package service
+package fileservice
 
 import "os"
 

@@ -1,4 +1,4 @@
-package service
+package fileservice
 
 type IFileService interface {
 	//FileName - return current file name
