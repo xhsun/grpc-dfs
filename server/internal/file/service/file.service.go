@@ -7,16 +7,23 @@ import (
 )
 
 type FileService struct {
+	fileName       string
 	fileRepository IFileRepository
 	file           *os.File
 }
 
 // NewFileService to construct the file service
-func NewFileService(fileRepository IFileRepository, file *os.File) *FileService {
+func NewFileService(fileRepository IFileRepository, fileName string, file *os.File) *FileService {
 	return &FileService{
 		fileRepository: fileRepository,
+		fileName:       fileName,
 		file:           file,
 	}
+}
+
+//FileName - return current file name
+func (fs *FileService) FileName() string {
+	return fs.fileName
 }
 
 //List - List all files iteratively in <FileStoragePath>
@@ -37,15 +44,15 @@ func (fs *FileService) List() (map[string]uint64, error) {
 }
 
 //Remove - Remove file at <FileStoragePath>/<FileName>
-func (fs *FileService) Remove(fileName string) error {
-	path, err := fs.fileRepository.FullFilePath(fileName)
+func (fs *FileService) Remove() error {
+	path, err := fs.fileRepository.FullFilePath(fs.fileName)
 	if err != nil {
 		return err
 	}
 
 	err = fs.fileRepository.Remove(path)
 	if err != nil {
-		log.WithField("FileName", fileName).WithError(err).Error("Encountered unexpected error while attempt to delete file")
+		log.WithField("FileName", fs.fileName).WithError(err).Error("Encountered unexpected error while attempt to delete file")
 		return err
 	}
 	return nil

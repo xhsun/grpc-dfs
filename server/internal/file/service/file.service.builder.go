@@ -11,12 +11,30 @@ type FileServiceBuilder struct {
 	fileRepository IFileRepository
 	err            error
 	file           *os.File
+	fileName       string
 }
 
 // NewFileServiceBuilder to construct the file service builder
 func NewFileServiceBuilder(fileRepository IFileRepository) *FileServiceBuilder {
 	return &FileServiceBuilder{
 		fileRepository: fileRepository,
+	}
+}
+
+//WithFileName - Add file name
+func (fsb *FileServiceBuilder) WithFileName(filename string) IFileServiceBuilder {
+	if filename == "" {
+		err := errors.New("file name cannot be empty")
+		log.WithError(err).Error("File name cannot be empty")
+		return &FileServiceBuilder{
+			fileRepository: fsb.fileRepository,
+			err:            err,
+		}
+	}
+	return &FileServiceBuilder{
+		fileRepository: fsb.fileRepository,
+		fileName:       filename,
+		file:           fsb.file,
 	}
 }
 
@@ -48,6 +66,7 @@ func (fsb *FileServiceBuilder) WithFile(filename string, flag int) IFileServiceB
 	}
 	return &FileServiceBuilder{
 		fileRepository: fsb.fileRepository,
+		fileName:       filename,
 		file:           file,
 	}
 }
@@ -57,5 +76,5 @@ func (fsb *FileServiceBuilder) Build() (IFileService, error) {
 	if fsb.err != nil {
 		return nil, fsb.err
 	}
-	return NewFileService(fsb.fileRepository, fsb.file), nil
+	return NewFileService(fsb.fileRepository, fsb.fileName, fsb.file), nil
 }

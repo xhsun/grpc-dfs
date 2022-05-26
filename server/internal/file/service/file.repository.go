@@ -24,7 +24,8 @@ func NewFileRepository(config *config.Config) *FileRepository {
 
 //FullFilePath - Generate full relative file path for the given file
 func (fr *FileRepository) FullFilePath(filename string) (string, error) {
-	path := filepath.Join(fr.fileStoragePath, filename)
+	cleaned := filepath.Join("/", filename)
+	path := filepath.Join(fr.fileStoragePath, cleaned)
 	dirName := filepath.Dir(path)
 	if _, err := os.Stat(dirName); err != nil {
 		err := os.MkdirAll(dirName, os.ModePerm)
