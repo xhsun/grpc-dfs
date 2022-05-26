@@ -1,0 +1,48 @@
+syntax = "proto3";
+package filetransfer;
+
+option go_package = "github.com/xhsun/grpc-file-transfer/filetransfer";
+
+service FileTransfer{
+     // Store files on the server
+     rpc Store(stream File) returns (Result) {}
+
+     // Fetch files from the server
+     rpc Fetch(FileName) returns (stream FileContent) {}
+ 
+     // Delete files from the server
+     rpc Delete(FileName) returns (Result) {}
+ 
+     // List all files on the server
+     rpc ListAll(Empty) returns (FileList) {}
+}
+
+message File{
+    string Name = 1;
+    int64 Size = 2;
+    bytes Content = 3;
+}
+
+message FileName {
+    string Name = 1;
+}
+
+message FileContent {
+    int64 Size = 1;
+    bytes Data = 2;
+}
+
+message FileList {
+    map<string, uint64> files = 1;
+}
+
+message Result{
+    enum Status{
+        Failed = 0;
+        Success = 1;
+    }
+    Status status = 1;
+}
+
+message Empty {
+}

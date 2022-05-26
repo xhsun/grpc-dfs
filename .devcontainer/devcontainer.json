@@ -30,7 +30,8 @@
 		"k--kato.intellij-idea-keybindings",
 		"codezombiech.gitignore",
 		"usernamehw.errorlens",
-		"2gua.rainbow-brackets"
+		"2gua.rainbow-brackets",
+		"zxh404.vscode-proto3"
 	],
 	"mounts": [
 		"source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
