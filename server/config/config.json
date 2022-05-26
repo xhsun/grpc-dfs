@@ -1,6 +1,6 @@
 {
     "port": 50051,
-    "certFilePath": "../x509/server_cert.pem",
-    "keyFilePath": "../x509/server_key.pem",
+    "certFilePath": "../x509/server-cert.pem",
+    "keyFilePath": "../x509/server-key.pem",
     "fileStoragePath": "serverFiles"
 }

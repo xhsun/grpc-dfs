@@ -12,6 +12,15 @@ Generate Web Server’s Private Key and CSR (Certificate Signing Request)
 openssl req -newkey rsa:4096 -nodes -keyout server-key.pem -out server-req.pem -subj "/C=CA/ST=STATE/L=CITY/O=DEV/OU=EXAMPLE/CN=FILETRANSFER/emailAddress=example@example.com"
 ```
 
+Sign the Web Server Certificate Request (CSR)
+```
+openssl x509 -req -in server-req.pem -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial -out server-cert.pem
+```
+
+See what is inside the certificate
+```
+openssl x509 -in server-cert.pem -noout -text
+```
 
 Generate new
 ```
