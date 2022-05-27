@@ -30,13 +30,13 @@ func (fs *FileService) FileName() string {
 func (fs *FileService) List() (map[string]uint64, error) {
 	path, err := fs.fileRepository.FullFilePath("")
 	if err != nil {
-		log.WithError(err).Error("Encountered unexpected error while attempt to retrieving file storage path")
+		log.WithError(err).Debug("Encountered unexpected error while attempt to retrieving file storage path")
 		return nil, err
 	}
 
 	fileList, err := fs.fileRepository.List(path)
 	if err != nil {
-		log.WithError(err).Error("Encountered unexpected error while attempt to retrieving file list")
+		log.WithError(err).Debug("Encountered unexpected error while attempt to retrieving file list")
 		return nil, err
 	}
 
@@ -52,7 +52,7 @@ func (fs *FileService) Remove() error {
 
 	err = fs.fileRepository.Remove(path)
 	if err != nil {
-		log.WithField("FileName", fs.fileName).WithError(err).Error("Encountered unexpected error while attempt to delete file")
+		log.WithField("FileName", fs.fileName).WithError(err).Debug("Encountered unexpected error while attempt to delete file")
 		return err
 	}
 	return nil

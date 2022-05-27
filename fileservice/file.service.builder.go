@@ -25,7 +25,7 @@ func NewFileServiceBuilder(fileRepository IFileRepository) *FileServiceBuilder {
 func (fsb *FileServiceBuilder) WithFileName(filename string) IFileServiceBuilder {
 	if filename == "" {
 		err := errors.New("file name cannot be empty")
-		log.WithError(err).Error("File name cannot be empty")
+		log.WithError(err).Debug("File name cannot be empty")
 		return &FileServiceBuilder{
 			fileRepository: fsb.fileRepository,
 			err:            err,
@@ -42,7 +42,7 @@ func (fsb *FileServiceBuilder) WithFileName(filename string) IFileServiceBuilder
 func (fsb *FileServiceBuilder) WithFile(filename string, flag int) IFileServiceBuilder {
 	if filename == "" {
 		err := errors.New("file name cannot be empty")
-		log.WithError(err).Error("File name cannot be empty")
+		log.WithError(err).Debug("File name cannot be empty")
 		return &FileServiceBuilder{
 			fileRepository: fsb.fileRepository,
 			err:            err,
@@ -50,7 +50,7 @@ func (fsb *FileServiceBuilder) WithFile(filename string, flag int) IFileServiceB
 	}
 	path, err := fsb.fileRepository.FullFilePath(filename)
 	if err != nil {
-		log.WithError(err).WithField("FileName", filename).Error("Encountered an error while generating full path")
+		log.WithError(err).WithField("FileName", filename).Debug("Encountered an error while generating full path")
 		return &FileServiceBuilder{
 			fileRepository: fsb.fileRepository,
 			err:            err,
@@ -58,7 +58,7 @@ func (fsb *FileServiceBuilder) WithFile(filename string, flag int) IFileServiceB
 	}
 	file, err := fsb.fileRepository.Open(path, flag)
 	if err != nil {
-		log.WithError(err).WithField("Path", path).Error("Encountered an error while opening or creating the file")
+		log.WithError(err).WithField("Path", path).Debug("Encountered an error while opening or creating the file")
 		return &FileServiceBuilder{
 			fileRepository: fsb.fileRepository,
 			err:            err,

@@ -40,7 +40,7 @@ func (fr *FileRepository) FullFilePath(filename string) (string, error) {
 //Open - Open file at given path with given flags
 func (fr *FileRepository) Open(path string, flag int) (*os.File, error) {
 	if path == "" {
-		return nil, errors.New("oath cannot be empty")
+		return nil, errors.New("path cannot be empty")
 	}
 	file, err := os.OpenFile(path, flag, 0644)
 	if err != nil {

@@ -34,20 +34,21 @@ func (fh *FileHandler) Store(stream pb.FileTransfer_StoreServer) error {
 	logger := log.WithField("Function", "Store")
 	for {
 		segment, err := stream.Recv()
-		if err == io.EOF {
-			if fileService != nil {
-				fileService.Sync()
-			}
-			logger.WithField("FileName", fileService.FileName()).Info("Successfully stored given file")
-			return stream.SendAndClose(&pb.Empty{})
-		}
 		if err != nil {
+			if err == io.EOF {
+				if fileService != nil {
+					fileService.Sync()
+				}
+				logger.WithField("FileName", fileService.FileName()).Info("Successfully stored given file")
+				return stream.SendAndClose(&pb.Empty{})
+			}
 			logger.WithError(err).Error("Encountered unexpected error while reading file segments")
 			return err
 		}
 		if fileService == nil {
 			fileService, err = fh.fileServiceBuilder.WithFile(segment.Name, os.O_CREATE|os.O_WRONLY).Build()
 			if err != nil {
+				logger.WithError(err).Error("Encountered unexpected error while generating file service")
 				return err
 			}
 			logger = logger.WithField("FileName", segment.Name)
@@ -72,6 +73,7 @@ func (fh *FileHandler) Fetch(fileName *pb.FileName, stream pb.FileTransfer_Fetch
 	logger = logger.WithField("FileName", fileName.Name)
 	fileService, err := fh.fileServiceBuilder.WithFile(fileName.Name, os.O_RDONLY).Build()
 	if err != nil {
+		logger.WithError(err).Error("Encountered unexpected error while generating file service")
 		return err
 	}
 	defer fileService.Close()
@@ -104,6 +106,7 @@ func (fh *FileHandler) Delete(ctx context.Context, fileName *pb.FileName) (*pb.E
 	fileService, _ := fh.fileServiceBuilder.WithFileName(fileName.Name).Build()
 	err := fileService.Remove()
 	if err != nil {
+		logger.WithError(err).Error("Encountered unexpected error while removing file")
 		return nil, err
 	}
 
@@ -116,6 +119,7 @@ func (fh *FileHandler) ListAll(ctx context.Context, empty *pb.Empty) (*pb.FileLi
 	fileService, _ := fh.fileServiceBuilder.Build()
 	fileList, err := fileService.List()
 	if err != nil {
+		logger.WithError(err).Error("Encountered unexpected error while retrieving file list")
 		return nil, err
 	}
 
