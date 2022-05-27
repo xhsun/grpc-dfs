@@ -38,8 +38,8 @@ func (fh *FileHandler) Store(stream pb.FileTransfer_StoreServer) error {
 			if err == io.EOF {
 				if fileService != nil {
 					fileService.Sync()
+					logger.WithField("FileName", fileService.FileName()).Info("Successfully stored given file")
 				}
-				logger.WithField("FileName", fileService.FileName()).Info("Successfully stored given file")
 				return stream.SendAndClose(&pb.Empty{})
 			}
 			logger.WithError(err).Error("Encountered unexpected error while reading file segments")
@@ -56,17 +56,17 @@ func (fh *FileHandler) Store(stream pb.FileTransfer_StoreServer) error {
 		}
 
 		saved, err := fileService.Write(segment.Content)
-		logger.Debug("Wrote %d bytes", saved)
 		if err != nil {
 			logger.WithError(err).Error("Encountered unexpected error while attempt to write to file")
 			return err
 		}
+		logger.Debugf("Wrote %d bytes", saved)
 	}
 }
 
 func (fh *FileHandler) Fetch(fileName *pb.FileName, stream pb.FileTransfer_FetchServer) error {
 	logger := log.WithField("Function", "Fetch")
-	if fileName == nil {
+	if fileName == nil || fileName.Name == "" {
 		logger.Error("File name cannot be empty")
 		return errors.New("file name cannot be empty")
 	}
