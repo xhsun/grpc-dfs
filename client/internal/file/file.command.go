@@ -66,6 +66,11 @@ func (fc *FileCommand) ListFiles(c *cli.Context) error {
 		return err
 	}
 
+	if len(files) < 1 {
+		pterm.Info.WithShowLineNumber(false).Println("Server is empty")
+		return nil
+	}
+
 	tableData := [][]string{{"File Name", "File Size"}}
 	for name, size := range files {
 		tableData = append(tableData, []string{name, fmt.Sprint(size)})

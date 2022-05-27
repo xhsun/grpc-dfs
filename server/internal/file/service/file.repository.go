@@ -54,6 +54,10 @@ func (fr *FileRepository) Open(path string, flag int) (*os.File, error) {
 func (fr *FileRepository) List(path string) (map[string]uint64, error) {
 	files := make(map[string]uint64)
 	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			log.WithError(err).Debug("Encountered unexpected error while attempt to retrieving file info")
+			return nil
+		}
 		if !info.IsDir() {
 			parts := strings.SplitN(path, "/", 2)
 			files[filepath.Join(parts[1:]...)] = uint64(info.Size())
