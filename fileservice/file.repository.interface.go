@@ -2,6 +2,7 @@ package fileservice
 
 import "os"
 
+//go:generate mockery --srcpkg=github.com/xhsun/grpc-file-transfer/fileservice --name=IFileRepository --output=./mock --outpkg=mock --structname=FileRepositoryMock --filename=file.repository.mock.go
 type IFileRepository interface {
 	//FullFilePath - Generate full relative file path for the given file
 	FullFilePath(filename string) (string, error)

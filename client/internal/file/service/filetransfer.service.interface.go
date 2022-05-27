@@ -1,5 +1,6 @@
 package service
 
+//go:generate mockery --srcpkg=github.com/xhsun/grpc-file-transfer/client/internal/file/service --name=IFileTransferService --output=../../mock --outpkg=mock --structname=FileTransferServiceMock --filename=filetransfer.service.mock.go
 type IFileTransferService interface {
 	//Upload - Upload the content of given file to server
 	Upload(fileName string) error

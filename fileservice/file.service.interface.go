@@ -1,5 +1,6 @@
 package fileservice
 
+//go:generate mockery --srcpkg=github.com/xhsun/grpc-file-transfer/fileservice --name=IFileService --output=./mock --outpkg=mock --structname=FileServiceMock --filename=file.service.mock.go
 type IFileService interface {
 	//FileName - return current file name
 	FileName() string

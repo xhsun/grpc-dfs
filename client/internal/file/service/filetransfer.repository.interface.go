@@ -6,6 +6,7 @@ import (
 	pb "github.com/xhsun/grpc-file-transfer/filetransfer"
 )
 
+//go:generate mockery --srcpkg=github.com/xhsun/grpc-file-transfer/client/internal/file/service --name=IFileTransferRepository --output=../../mock --outpkg=mock --structname=FileTransferRepositoryMock --filename=filetransfer.repository.mock.go
 type IFileTransferRepository interface {
 	//UploadStream - Get upload stream to store file to server
 	UploadStream(ctx context.Context) (pb.FileTransfer_StoreClient, error)

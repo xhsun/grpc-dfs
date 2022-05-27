@@ -11,7 +11,11 @@ import (
 
 func main() {
 	var config config.Config
-	cleanenv.ReadConfig("config/config.json", &config)
+	configPath, exist := os.LookupEnv("FILE_TRANSFER_SERVER_CONFIG_PATH")
+	if !exist {
+		configPath = "config/config.json"
+	}
+	cleanenv.ReadConfig(configPath, &config)
 	log.WithField("config", config).Info("Attempt to start file transfer server")
 
 	// Intialize services
