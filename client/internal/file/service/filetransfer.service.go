@@ -14,12 +14,12 @@ import (
 
 type FileTransferServer struct {
 	fileChunkSize          int
-	fileServiceBuilder     fileservice.FileServiceBuilder
+	fileServiceBuilder     fileservice.IFileServiceBuilder
 	fileTransferRepository IFileTransferRepository
 }
 
 // NewFileTransferServer method creates a new file transfer service
-func NewFileTransferServer(config *config.Config, fileServiceBuilder fileservice.FileServiceBuilder, fileTransferRepository IFileTransferRepository) *FileTransferServer {
+func NewFileTransferServer(config *config.Config, fileServiceBuilder fileservice.IFileServiceBuilder, fileTransferRepository IFileTransferRepository) *FileTransferServer {
 	return &FileTransferServer{
 		fileChunkSize:          config.FileChunkSize,
 		fileServiceBuilder:     fileServiceBuilder,

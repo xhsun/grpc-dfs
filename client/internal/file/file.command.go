@@ -35,16 +35,18 @@ func (fc *FileCommand) Upload(c *cli.Context) error {
 		return err
 	}
 
-	pterm.Success.WithShowLineNumber(false).Printfln("Successfully uploaded %s to server")
+	pterm.Success.WithShowLineNumber(false).Printfln("Successfully uploaded %s to server", fileName)
 	return nil
 }
 
 // Remove - Remove the given file from server
 func (fc *FileCommand) Download(c *cli.Context) error {
 	serverFileName := strings.TrimSpace(c.Args().First())
-	localFileName := strings.TrimSpace(c.Args().Get(2))
+	localFileName := strings.TrimSpace(c.Args().Get(1))
 	if serverFileName == "" || localFileName == "" {
-		fc.LogError(internalError.NewFileNameError())
+		err := internalError.NewFileNameError()
+		fc.LogError(err)
+		return err
 	}
 
 	if err := fc.fileTransferService.Download(serverFileName, localFileName); err != nil {
@@ -84,6 +86,6 @@ func (fc *FileCommand) Remove(c *cli.Context) error {
 		return err
 	}
 
-	pterm.Success.WithShowLineNumber(false).Printfln("Successfully removed %s from server")
+	pterm.Success.WithShowLineNumber(false).Printfln("Successfully removed %s from server", fileName)
 	return nil
 }

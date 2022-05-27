@@ -24,5 +24,5 @@ func (bc *BaseCommand) LogError(err error) {
 		internalErr = internalError.NewUnexpectedError(err)
 		pterm.Debug.Println(internalErr.Error())
 	}
-	pterm.Error.WithShowLineNumber(false).Printf(internalErr.GetDisplayMessage())
+	pterm.Error.WithShowLineNumber(false).Println(internalErr.GetDisplayMessage())
 }

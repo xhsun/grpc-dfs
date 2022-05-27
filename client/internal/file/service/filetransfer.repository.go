@@ -12,7 +12,7 @@ type FileTransferRepository struct {
 }
 
 // NewFileTransferRepository method creates a new file transfer repository
-func NewFileTransferRepository(client client.GRPCClient) *FileTransferRepository {
+func NewFileTransferRepository(client *client.GRPCClient) *FileTransferRepository {
 	return &FileTransferRepository{
 		client: client.Client,
 	}
