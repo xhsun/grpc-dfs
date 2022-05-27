@@ -112,7 +112,7 @@ func (fts *FileTransferServer) ServerFileList() (map[string]uint64, error) {
 		return nil, err
 	}
 
-	pterm.Debug.Println("Successfully retrieved list of files: %s", files)
+	pterm.Debug.Printfln("Successfully retrieved list of files: %v", files)
 	return files, nil
 }
 
