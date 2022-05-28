@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	pb "github.com/xhsun/grpc-file-transfer/filetransfer"
+	pb "github.com/xhsun/grpc-file-transfer/dfs"
 )
 
 //go:generate mockery --srcpkg=github.com/xhsun/grpc-file-transfer/client/internal/file/service --name=IFileTransferRepository --output=../../mock --outpkg=mock --structname=FileTransferRepositoryMock --filename=filetransfer.repository.mock.go

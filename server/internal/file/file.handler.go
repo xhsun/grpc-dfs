@@ -7,8 +7,8 @@ import (
 	"os"
 
 	log "github.com/sirupsen/logrus"
+	pb "github.com/xhsun/grpc-file-transfer/dfs"
 	fileService "github.com/xhsun/grpc-file-transfer/fileservice"
-	pb "github.com/xhsun/grpc-file-transfer/filetransfer"
 	"github.com/xhsun/grpc-file-transfer/server/internal/config"
 )
 

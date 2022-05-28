@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.12.4
-// source: filetransfer/filetransfer.proto
+// source: dfs/dfs.proto
 
-package filetransfer
+package dfs
 
 import (
 	context "context"
@@ -41,7 +41,7 @@ func NewFileTransferClient(cc grpc.ClientConnInterface) FileTransferClient {
 }
 
 func (c *fileTransferClient) Store(ctx context.Context, opts ...grpc.CallOption) (FileTransfer_StoreClient, error) {
-	stream, err := c.cc.NewStream(ctx, &FileTransfer_ServiceDesc.Streams[0], "/filetransfer.FileTransfer/Store", opts...)
+	stream, err := c.cc.NewStream(ctx, &FileTransfer_ServiceDesc.Streams[0], "/dfs.FileTransfer/Store", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (x *fileTransferStoreClient) CloseAndRecv() (*Empty, error) {
 }
 
 func (c *fileTransferClient) Fetch(ctx context.Context, in *FileName, opts ...grpc.CallOption) (FileTransfer_FetchClient, error) {
-	stream, err := c.cc.NewStream(ctx, &FileTransfer_ServiceDesc.Streams[1], "/filetransfer.FileTransfer/Fetch", opts...)
+	stream, err := c.cc.NewStream(ctx, &FileTransfer_ServiceDesc.Streams[1], "/dfs.FileTransfer/Fetch", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func (x *fileTransferFetchClient) Recv() (*FileContent, error) {
 
 func (c *fileTransferClient) Delete(ctx context.Context, in *FileName, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/filetransfer.FileTransfer/Delete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dfs.FileTransfer/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +117,7 @@ func (c *fileTransferClient) Delete(ctx context.Context, in *FileName, opts ...g
 
 func (c *fileTransferClient) ListAll(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*FileList, error) {
 	out := new(FileList)
-	err := c.cc.Invoke(ctx, "/filetransfer.FileTransfer/ListAll", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dfs.FileTransfer/ListAll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -225,7 +225,7 @@ func _FileTransfer_Delete_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/filetransfer.FileTransfer/Delete",
+		FullMethod: "/dfs.FileTransfer/Delete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FileTransferServer).Delete(ctx, req.(*FileName))
@@ -243,7 +243,7 @@ func _FileTransfer_ListAll_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/filetransfer.FileTransfer/ListAll",
+		FullMethod: "/dfs.FileTransfer/ListAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FileTransferServer).ListAll(ctx, req.(*Empty))
@@ -255,7 +255,7 @@ func _FileTransfer_ListAll_Handler(srv interface{}, ctx context.Context, dec fun
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var FileTransfer_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "filetransfer.FileTransfer",
+	ServiceName: "dfs.FileTransfer",
 	HandlerType: (*FileTransferServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -279,5 +279,5 @@ var FileTransfer_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "filetransfer/filetransfer.proto",
+	Metadata: "dfs/dfs.proto",
 }

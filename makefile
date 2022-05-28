@@ -14,20 +14,24 @@ all: clean build-server build-cli test ## Runs a clean, build, and test
 
 build-server: ## Builds a static executable
 	@echo "+ $@"
-	$(GO) build -tags "static_build" ${GO_LDFLAGS_STATIC} -o fileTransferServer ./server/cmd
+	$(GO) build -tags "static_build" ${GO_LDFLAGS_STATIC} -o dfsServer ./server/cmd
 
 build-cli: ## Builds a static executable
 	@echo "+ $@"
-	$(GO) build -tags "static_build" ${GO_LDFLAGS_STATIC} -o file-transfer ./client/cmd
+	$(GO) build -tags "static_build" ${GO_LDFLAGS_STATIC} -o dfs-cli ./client/dfs-cli
 
 test: ## Runs go test with coverage
 	$(GO) test -coverprofile=coverage.txt  $(shell $(GO) list ./...)
 
+install-cli: ## Build and install a static executable
+	@echo "+ $@"
+	$(GO) install -tags "static_build" ${GO_LDFLAGS_STATIC} ./client/dfs-cli
+
 docker-server: # Builds the docker images
-	DOCKER_BUILDKIT="1" docker build --ssh default -f ./Dockerfile.server -t filetransferserver:latest .
+	DOCKER_BUILDKIT="1" docker build --ssh default -f ./Dockerfile.server -t dfs-server:latest .
 
 clean: ## Cleanup any build binaries, packages or artifacts
 	@echo "+ $@"
-	$(RM) fileTransferServer
-	$(RM) file-transfer
+	$(RM) dfsServer
+	$(RM) dfs-cli
 	$(RM) coverage.txt

@@ -11,8 +11,8 @@ import (
 	"github.com/xhsun/grpc-file-transfer/client/internal/config"
 	"github.com/xhsun/grpc-file-transfer/client/internal/file/service"
 	"github.com/xhsun/grpc-file-transfer/client/internal/mock"
+	pbMock "github.com/xhsun/grpc-file-transfer/dfs/mock"
 	fileMock "github.com/xhsun/grpc-file-transfer/fileservice/mock"
-	pbMock "github.com/xhsun/grpc-file-transfer/filetransfer/mock"
 	"syreclabs.com/go/faker"
 )
 

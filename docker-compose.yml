@@ -6,3 +6,5 @@ services:
       dockerfile: ./Dockerfile.server
     ports:
      - "50051:50051"
+    volumes:
+      - "./x509/:/server/x509/:ro"

@@ -1,7 +1,7 @@
 syntax = "proto3";
-package filetransfer;
+package dfs;
 
-option go_package = "github.com/xhsun/grpc-file-transfer/filetransfer";
+option go_package = "github.com/xhsun/grpc-file-transfer/dfs";
 
 service FileTransfer{
      // Store files on the server

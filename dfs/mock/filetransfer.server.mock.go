@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/stretchr/testify/mock"
-	pb "github.com/xhsun/grpc-file-transfer/filetransfer"
+	pb "github.com/xhsun/grpc-file-transfer/dfs"
 	"google.golang.org/grpc/metadata"
 )
 

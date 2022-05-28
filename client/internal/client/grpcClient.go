@@ -4,7 +4,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/xhsun/grpc-file-transfer/client/internal/config"
-	pb "github.com/xhsun/grpc-file-transfer/filetransfer"
+	pb "github.com/xhsun/grpc-file-transfer/dfs"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )

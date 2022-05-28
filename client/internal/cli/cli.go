@@ -18,7 +18,7 @@ func NewCLI(config *config.Config, fileCommand *file.FileCommand) *CLI {
 	return &CLI{
 		app: &cli.App{
 			Name:                 config.ProjectName,
-			Usage:                "File Transfer CLI",
+			Usage:                "Distributed File System CLI",
 			EnableBashCompletion: true,
 			Commands: []*cli.Command{
 				{

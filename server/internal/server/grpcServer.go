@@ -5,7 +5,7 @@ import (
 	"net"
 
 	log "github.com/sirupsen/logrus"
-	pb "github.com/xhsun/grpc-file-transfer/filetransfer"
+	pb "github.com/xhsun/grpc-file-transfer/dfs"
 	"github.com/xhsun/grpc-file-transfer/server/internal/config"
 	"github.com/xhsun/grpc-file-transfer/server/internal/file"
 	"google.golang.org/grpc"

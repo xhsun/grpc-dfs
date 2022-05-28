@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/xhsun/grpc-file-transfer/client/internal/client"
-	pb "github.com/xhsun/grpc-file-transfer/filetransfer"
+	pb "github.com/xhsun/grpc-file-transfer/dfs"
 )
 
 type FileTransferRepository struct {
