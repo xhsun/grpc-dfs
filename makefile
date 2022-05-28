@@ -12,6 +12,8 @@ GO := go
 
 all: clean build-server build-cli test ## Runs a clean, build, and test
 
+build: build-server build-cli
+
 build-server: ## Builds a static executable
 	@echo "+ $@"
 	$(GO) build -tags "static_build" ${GO_LDFLAGS_STATIC} -o dfsServer ./server/cmd
