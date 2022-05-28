@@ -175,7 +175,7 @@ The server will attempt to read content of configuration JSON file from `DFS_SER
 
 The following is all the supported configurations via file:
 
-``` json
+```
 {
     // Server port
     "port": 50051, 
