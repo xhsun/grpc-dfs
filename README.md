@@ -1,5 +1,10 @@
 # Distributed File System Using gRPC
 
+
+![main workflow](https://github.com/xhsun/grpc-dfs/actions/workflows/main.yml/badge.svg)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=xhsun_grpc-dfs&metric=coverage)](https://sonarcloud.io/summary/new_code?id=xhsun_grpc-dfs)
+
+
 A simple distributed file system (DFS) that supports upload, download, list, and remove to interact with files on a remote server. This DFS contains a basic SSL/TLS authentication to encrypt all data exchange between a remote server and a CLI.
 
 ## Prerequisites
