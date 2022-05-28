@@ -39,5 +39,6 @@ func (s *GRPCServer) Start() error {
 	}
 	grpcServer := grpc.NewServer([]grpc.ServerOption{grpc.Creds(creds)}...)
 	pb.RegisterFileTransferServer(grpcServer, s.fileHandler)
+	log.Info("Started file transfer server")
 	return grpcServer.Serve(lis)
 }

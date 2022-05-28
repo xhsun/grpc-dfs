@@ -16,7 +16,8 @@ func main() {
 		configPath = "config/config.json"
 	}
 	cleanenv.ReadConfig(configPath, &config)
-	log.WithField("config", config).Info("Attempt to start file transfer server")
+	cleanenv.ReadEnv(&config)
+	log.WithField("config", config).Debug("Attempt to start file transfer server")
 
 	// Intialize services
 	appServers, err := registry.InitializeServer(&config)

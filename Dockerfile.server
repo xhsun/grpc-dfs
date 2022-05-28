@@ -1,0 +1,22 @@
+ARG GO_VERSION=1.18
+
+FROM golang:$GO_VERSION AS build
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+RUN make build-server
+
+FROM golang:$GO_VERSION
+WORKDIR  /server
+EXPOSE 50051
+ENV FILE_TRANSFER_SERVER_CERTIFICATE ./server-cert.pem
+ENV FILE_TRANSFER_SERVER_KEY ./server-key.pem
+
+COPY ./x509/server-cert.pem /server
+COPY ./x509/server-key.pem /server
+COPY --from=build /app/fileTransferServer /server
+CMD ["/server/fileTransferServer"]
