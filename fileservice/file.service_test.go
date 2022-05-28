@@ -32,6 +32,37 @@ func (suite *FileServiceSuite) TestFileName() {
 	assert.Equal(suite.T(), suite.fileName, actual)
 }
 
+func (suite *FileServiceSuite) TestFileSize() {
+	inputFullPath := faker.Lorem().Word()
+	expected := uint64(faker.RandomInt64(3, 10))
+
+	suite.fileRepositoryMock.On("FullFilePath", suite.fileName).Return(inputFullPath, nil)
+	suite.fileRepositoryMock.On("FileSize", inputFullPath).Return(expected, nil)
+
+	actual, err := suite.target.FileSize()
+	assert.NoError(suite.T(), err)
+	assert.Equal(suite.T(), expected, actual)
+}
+
+func (suite *FileServiceSuite) TestFileSizePathIssue() {
+	suite.fileRepositoryMock.On("FullFilePath", suite.fileName).Return("", errors.New(""))
+
+	actual, err := suite.target.FileSize()
+	assert.Error(suite.T(), err)
+	assert.Empty(suite.T(), actual)
+}
+
+func (suite *FileServiceSuite) TestFileSizeFileIssue() {
+	inputFullPath := faker.Lorem().Word()
+
+	suite.fileRepositoryMock.On("FullFilePath", suite.fileName).Return(inputFullPath, nil)
+	suite.fileRepositoryMock.On("FileSize", inputFullPath).Return(uint64(0), errors.New(""))
+
+	actual, err := suite.target.FileSize()
+	assert.Error(suite.T(), err)
+	assert.Empty(suite.T(), actual)
+}
+
 func (suite *FileServiceSuite) TestList() {
 	inputFullPath := faker.Lorem().Word()
 	expected := map[string]uint64{faker.RandomString(5): uint64(faker.RandomInt(1, 40))}

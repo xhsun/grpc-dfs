@@ -43,15 +43,15 @@ func (ftr *FileTransferRepository) DownloadStream(ctx context.Context, fileName 
 }
 
 //Download - Download file chunk from server
-func (ftr *FileTransferRepository) Download(stream pb.FileTransfer_FetchClient) ([]byte, error) {
+func (ftr *FileTransferRepository) Download(stream pb.FileTransfer_FetchClient) ([]byte, int, error) {
 	content, err := stream.Recv()
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	if content != nil {
-		return content.Data, nil
+		return content.Data, int(content.Total), nil
 	}
-	return []byte{}, nil
+	return []byte{}, 0, nil
 }
 
 //ServerFileList - Get list of files from server

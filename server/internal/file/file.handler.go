@@ -78,6 +78,11 @@ func (fh *FileHandler) Fetch(fileName *pb.FileName, stream pb.FileTransfer_Fetch
 	}
 	defer fileService.Close()
 
+	total, err := fileService.FileSize()
+	if err != nil {
+		return err
+	}
+
 	for {
 		buffer, err := fileService.Read()
 		if err != nil {
@@ -88,7 +93,7 @@ func (fh *FileHandler) Fetch(fileName *pb.FileName, stream pb.FileTransfer_Fetch
 			logger.WithError(err).Error("Encountered unexpected error while attempt to read file")
 			return err
 		}
-		err = stream.Send(&pb.FileContent{Data: buffer})
+		err = stream.Send(&pb.FileContent{Data: buffer, Total: total})
 		if err != nil {
 			logger.WithError(err).Error("Encountered unexpected error while attempt to send file chunk")
 			return err

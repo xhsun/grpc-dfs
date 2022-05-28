@@ -21,9 +21,23 @@ func NewFileService(fileRepository IFileRepository, fileName string, file *os.Fi
 	}
 }
 
-//FileName - return current file name
+//FileName - Return current file name
 func (fs *FileService) FileName() string {
 	return fs.fileName
+}
+
+//FileSize - Return current file size
+func (fs *FileService) FileSize() (uint64, error) {
+	path, err := fs.fileRepository.FullFilePath(fs.fileName)
+	if err != nil {
+		return 0, err
+	}
+
+	size, err := fs.fileRepository.FileSize(path)
+	if err != nil {
+		return 0, err
+	}
+	return size, nil
 }
 
 //List - List all files iteratively in <FileStoragePath>

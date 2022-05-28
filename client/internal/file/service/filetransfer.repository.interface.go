@@ -17,7 +17,7 @@ type IFileTransferRepository interface {
 	//DownloadStream - Get download stream to fetch file from server
 	DownloadStream(ctx context.Context, fileName string) (pb.FileTransfer_FetchClient, error)
 	//Download - Download file chunk from server
-	Download(stream pb.FileTransfer_FetchClient) ([]byte, error)
+	Download(stream pb.FileTransfer_FetchClient) ([]byte, int, error)
 	//ServerFileList - Get list of files from server
 	ServerFileList(ctx context.Context) (map[string]uint64, error)
 	//Delete - Delete file from server

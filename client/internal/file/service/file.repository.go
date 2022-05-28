@@ -24,6 +24,15 @@ func (fr *FileRepository) FullFilePath(filename string) (string, error) {
 	return filename, nil
 }
 
+//FileSize - Return file size of the given file name
+func (fr *FileRepository) FileSize(path string) (uint64, error) {
+	fi, err := os.Stat(path)
+	if err != nil {
+		return 0, err
+	}
+	return uint64(fi.Size()), nil
+}
+
 //Open - Open file at given path with given flags
 func (fr *FileRepository) Open(path string, flag int) (*os.File, error) {
 	if path == "" {

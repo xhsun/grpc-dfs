@@ -38,16 +38,25 @@ func (fts *FileTransferServer) Upload(fileName string) error {
 	}
 	defer fileService.Close()
 
+	total, err := fileService.FileSize()
+	if err != nil {
+		return internalError.NewIOError(err)
+	}
+
+	progress, _ := pterm.DefaultProgressbar.WithTotal(int(total)).WithShowElapsedTime(false).WithTitle("Uploading").Start()
+
 	pterm.Debug.Printfln("Start to upload %s to server", fileName)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	stream, err := fts.fileTransferRepository.UploadStream(ctx)
 	if err != nil {
+		progress.Stop()
 		return err
 	}
 	for {
 		buffer, err := fileService.Read()
 		if err != nil {
+			progress.Stop()
 			if err == io.EOF {
 				pterm.Debug.Printfln("Upload %s complete", fileName)
 				err := fts.fileTransferRepository.UploadClose(stream)
@@ -60,13 +69,16 @@ func (fts *FileTransferServer) Upload(fileName string) error {
 		}
 		err = fts.fileTransferRepository.Upload(stream, fileName, buffer)
 		if err != nil {
+			progress.Stop()
 			return err
 		}
+		progress.Add(len(buffer))
 	}
 }
 
 //Download - Download the content of given service file from server to the given local location
 func (fts *FileTransferServer) Download(serverFileName string, localFileName string) error {
+	var progress *pterm.ProgressbarPrinter
 	if serverFileName == "" || localFileName == "" {
 		return internalError.NewFileNameError()
 	}
@@ -84,8 +96,11 @@ func (fts *FileTransferServer) Download(serverFileName string, localFileName str
 		return err
 	}
 	for {
-		segment, err := fts.fileTransferRepository.Download(stream)
+		segment, total, err := fts.fileTransferRepository.Download(stream)
 		if err != nil {
+			if progress != nil {
+				progress.Stop()
+			}
 			if err == io.EOF {
 				fileService.Sync()
 				pterm.Debug.Printfln("Download %s to %s complete", serverFileName, localFileName)
@@ -93,12 +108,17 @@ func (fts *FileTransferServer) Download(serverFileName string, localFileName str
 			}
 			return internalError.NewIOError(err)
 		}
+		if progress == nil {
+			progress, _ = pterm.DefaultProgressbar.WithTotal(int(total)).WithShowElapsedTime(false).WithTitle("Downloading").Start()
+		}
 
 		saved, err := fileService.Write(segment)
 		if err != nil {
+			progress.Stop()
 			return internalError.NewIOError(err)
 		}
 		pterm.Debug.Printfln("Downloaded %d bytes", saved)
+		progress.Add(saved)
 	}
 }
 

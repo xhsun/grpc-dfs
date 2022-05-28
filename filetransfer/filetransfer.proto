@@ -28,6 +28,7 @@ message FileName {
 
 message FileContent {
     bytes Data = 1;
+    uint64 Total = 2;
 }
 
 message FileList {

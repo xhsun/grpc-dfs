@@ -18,6 +18,27 @@ func (_m *FileRepositoryMock) Close(file *os.File) {
 	_m.Called(file)
 }
 
+// FileSize provides a mock function with given fields: path
+func (_m *FileRepositoryMock) FileSize(path string) (uint64, error) {
+	ret := _m.Called(path)
+
+	var r0 uint64
+	if rf, ok := ret.Get(0).(func(string) uint64); ok {
+		r0 = rf(path)
+	} else {
+		r0 = ret.Get(0).(uint64)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(path)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FullFilePath provides a mock function with given fields: filename
 func (_m *FileRepositoryMock) FullFilePath(filename string) (string, error) {
 	ret := _m.Called(filename)

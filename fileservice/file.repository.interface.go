@@ -6,6 +6,8 @@ import "os"
 type IFileRepository interface {
 	//FullFilePath - Generate full relative file path for the given file
 	FullFilePath(filename string) (string, error)
+	//FileSize - Return file size of the given file name
+	FileSize(path string) (uint64, error)
 	//Open - Open file at given path with given flags
 	Open(path string, flag int) (*os.File, error)
 	//List - List all file iteratively in the file storage folder

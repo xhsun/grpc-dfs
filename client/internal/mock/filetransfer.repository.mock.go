@@ -29,7 +29,7 @@ func (_m *FileTransferRepositoryMock) Delete(ctx context.Context, fileName strin
 }
 
 // Download provides a mock function with given fields: stream
-func (_m *FileTransferRepositoryMock) Download(stream filetransfer.FileTransfer_FetchClient) ([]byte, error) {
+func (_m *FileTransferRepositoryMock) Download(stream filetransfer.FileTransfer_FetchClient) ([]byte, int, error) {
 	ret := _m.Called(stream)
 
 	var r0 []byte
@@ -41,14 +41,21 @@ func (_m *FileTransferRepositoryMock) Download(stream filetransfer.FileTransfer_
 		}
 	}
 
-	var r1 error
-	if rf, ok := ret.Get(1).(func(filetransfer.FileTransfer_FetchClient) error); ok {
+	var r1 int
+	if rf, ok := ret.Get(1).(func(filetransfer.FileTransfer_FetchClient) int); ok {
 		r1 = rf(stream)
 	} else {
-		r1 = ret.Error(1)
+		r1 = ret.Get(1).(int)
 	}
 
-	return r0, r1
+	var r2 error
+	if rf, ok := ret.Get(2).(func(filetransfer.FileTransfer_FetchClient) error); ok {
+		r2 = rf(stream)
+	} else {
+		r2 = ret.Error(2)
+	}
+
+	return r0, r1, r2
 }
 
 // DownloadStream provides a mock function with given fields: ctx, fileName

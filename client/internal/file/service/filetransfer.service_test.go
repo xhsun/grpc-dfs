@@ -39,6 +39,7 @@ func (suite *FileTransferServerSuite) TestUpload() {
 
 	suite.fileServiceBuilderMock.On("WithFile", inputFileName, mocks.Anything).Return(suite.fileServiceBuilderMock)
 	suite.fileServiceBuilderMock.On("Build").Return(suite.fileServiceMock, nil)
+	suite.fileServiceMock.On("FileSize").Return(uint64(faker.RandomInt64(5, 10)), nil)
 
 	suite.fileTransferRepositoryMock.On("UploadStream", mocks.Anything).Return(new(pbMock.FileTransferClientMock), nil)
 	suite.fileServiceMock.On("Read").Return([]byte{}, io.EOF)
@@ -69,6 +70,7 @@ func (suite *FileTransferServerSuite) TestUploadStreamAccessIssue() {
 
 	suite.fileServiceBuilderMock.On("WithFile", inputFileName, mocks.Anything).Return(suite.fileServiceBuilderMock)
 	suite.fileServiceBuilderMock.On("Build").Return(suite.fileServiceMock, nil)
+	suite.fileServiceMock.On("FileSize").Return(uint64(faker.RandomInt64(5, 10)), nil)
 
 	suite.fileTransferRepositoryMock.On("UploadStream", mocks.Anything).Return(nil, errors.New(""))
 	suite.fileServiceMock.On("Close").Return()
@@ -83,6 +85,7 @@ func (suite *FileTransferServerSuite) TestUploadFileUploadIssue() {
 
 	suite.fileServiceBuilderMock.On("WithFile", inputFileName, mocks.Anything).Return(suite.fileServiceBuilderMock)
 	suite.fileServiceBuilderMock.On("Build").Return(suite.fileServiceMock, nil)
+	suite.fileServiceMock.On("FileSize").Return(uint64(faker.RandomInt64(5, 10)), nil)
 
 	suite.fileTransferRepositoryMock.On("UploadStream", mocks.Anything).Return(new(pbMock.FileTransferClientMock), nil)
 	suite.fileServiceMock.On("Read").Return(inputData, nil)
@@ -98,6 +101,7 @@ func (suite *FileTransferServerSuite) TestUploadFileReadIssue() {
 
 	suite.fileServiceBuilderMock.On("WithFile", inputFileName, mocks.Anything).Return(suite.fileServiceBuilderMock)
 	suite.fileServiceBuilderMock.On("Build").Return(suite.fileServiceMock, nil)
+	suite.fileServiceMock.On("FileSize").Return(uint64(faker.RandomInt64(5, 10)), nil)
 
 	suite.fileTransferRepositoryMock.On("UploadStream", mocks.Anything).Return(new(pbMock.FileTransferClientMock), nil)
 	suite.fileServiceMock.On("Read").Return([]byte{}, errors.New(""))
@@ -112,6 +116,7 @@ func (suite *FileTransferServerSuite) TestUploadStreamCloseIssue() {
 
 	suite.fileServiceBuilderMock.On("WithFile", inputFileName, mocks.Anything).Return(suite.fileServiceBuilderMock)
 	suite.fileServiceBuilderMock.On("Build").Return(suite.fileServiceMock, nil)
+	suite.fileServiceMock.On("FileSize").Return(uint64(faker.RandomInt64(5, 10)), nil)
 
 	suite.fileTransferRepositoryMock.On("UploadStream", mocks.Anything).Return(new(pbMock.FileTransferClientMock), nil)
 	suite.fileServiceMock.On("Read").Return([]byte{}, io.EOF)
@@ -130,7 +135,7 @@ func (suite *FileTransferServerSuite) TestDownload() {
 	suite.fileServiceBuilderMock.On("Build").Return(suite.fileServiceMock, nil)
 
 	suite.fileTransferRepositoryMock.On("DownloadStream", mocks.Anything, inputFileName).Return(new(pbMock.FileTransferClientMock), nil)
-	suite.fileTransferRepositoryMock.On("Download", mocks.Anything).Return([]byte{}, io.EOF)
+	suite.fileTransferRepositoryMock.On("Download", mocks.Anything).Return([]byte{}, 0, io.EOF)
 	suite.fileServiceMock.On("Sync").Return()
 	suite.fileServiceMock.On("Close").Return()
 
@@ -182,7 +187,7 @@ func (suite *FileTransferServerSuite) TestDownloadWriteIssue() {
 	suite.fileServiceBuilderMock.On("Build").Return(suite.fileServiceMock, nil)
 
 	suite.fileTransferRepositoryMock.On("DownloadStream", mocks.Anything, inputFileName).Return(new(pbMock.FileTransferClientMock), nil)
-	suite.fileTransferRepositoryMock.On("Download", mocks.Anything).Return(inputData, nil)
+	suite.fileTransferRepositoryMock.On("Download", mocks.Anything).Return(inputData, faker.RandomInt(5, 10), nil)
 	suite.fileServiceMock.On("Write", inputData).Return(0, errors.New(""))
 	suite.fileServiceMock.On("Close").Return()
 
@@ -198,7 +203,7 @@ func (suite *FileTransferServerSuite) TestDownloadFetchIssue() {
 	suite.fileServiceBuilderMock.On("Build").Return(suite.fileServiceMock, nil)
 
 	suite.fileTransferRepositoryMock.On("DownloadStream", mocks.Anything, inputFileName).Return(new(pbMock.FileTransferClientMock), nil)
-	suite.fileTransferRepositoryMock.On("Download", mocks.Anything).Return([]byte{}, errors.New(""))
+	suite.fileTransferRepositoryMock.On("Download", mocks.Anything).Return([]byte{}, 0, errors.New(""))
 	suite.fileServiceMock.On("Close").Return()
 
 	err := suite.target.Download(inputFileName, inputLocalFileName)

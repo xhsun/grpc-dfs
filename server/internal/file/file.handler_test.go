@@ -80,6 +80,7 @@ func (suite *FileHandlerSuite) TestFetch() {
 
 	suite.fileServiceBuilderMock.On("WithFile", inputFileName.Name, mocks.Anything).Return(suite.fileServiceBuilderMock)
 	suite.fileServiceBuilderMock.On("Build").Return(suite.fileServiceMock, nil)
+	suite.fileServiceMock.On("FileSize").Return(uint64(faker.RandomInt64(5, 10)), nil)
 
 	suite.fileServiceMock.On("Read").Return([]byte{}, io.EOF)
 	suite.fileServiceMock.On("Close").Return()
@@ -113,6 +114,7 @@ func (suite *FileHandlerSuite) TestFetchFileReadIssue() {
 
 	suite.fileServiceBuilderMock.On("WithFile", inputFileName.Name, mocks.Anything).Return(suite.fileServiceBuilderMock)
 	suite.fileServiceBuilderMock.On("Build").Return(suite.fileServiceMock, nil)
+	suite.fileServiceMock.On("FileSize").Return(uint64(faker.RandomInt64(5, 10)), nil)
 
 	suite.fileServiceMock.On("Read").Return([]byte{}, errors.New(""))
 	suite.fileServiceMock.On("Close").Return()
@@ -127,6 +129,7 @@ func (suite *FileHandlerSuite) TestFetchFileSendIssue() {
 
 	suite.fileServiceBuilderMock.On("WithFile", inputFileName.Name, mocks.Anything).Return(suite.fileServiceBuilderMock)
 	suite.fileServiceBuilderMock.On("Build").Return(suite.fileServiceMock, nil)
+	suite.fileServiceMock.On("FileSize").Return(uint64(faker.RandomInt64(5, 10)), nil)
 
 	suite.fileServiceMock.On("Read").Return(inputData, nil)
 	suite.streamMock.On("Send", mocks.Anything).Return(errors.New(""))
