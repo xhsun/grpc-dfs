@@ -13,8 +13,8 @@ RUN make build-server
 FROM golang:$GO_VERSION
 WORKDIR  /server
 EXPOSE 50051
-ENV FILE_TRANSFER_SERVER_CERTIFICATE ./x509/server-cert.pem
-ENV FILE_TRANSFER_SERVER_KEY ./x509/server-key.pem
+ENV DFS_SERVER_CERTIFICATE ./x509/server-cert.pem
+ENV DFS_SERVER_KEY ./x509/server-key.pem
 
 COPY --from=build /app/dfsServer /server
 CMD ["/server/dfsServer"]

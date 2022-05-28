@@ -11,9 +11,9 @@
             "mode": "debug",
             "program": "${workspaceFolder}/server/cmd",
             "env": {
-                "FILE_TRANSFER_SERVER_CONFIG_PATH": "../config/config.json", 
-                "FILE_TRANSFER_SERVER_CERTIFICATE":"../../x509/server-cert.pem",
-                "FILE_TRANSFER_SERVER_KEY":"../../x509/server-key.pem"
+                "DFS_SERVER_CONFIG_PATH": "../config/config.json", 
+                "DFS_SERVER_CERTIFICATE":"../../x509/server-cert.pem",
+                "DFS_SERVER_KEY":"../../x509/server-key.pem"
             }
         },
         {
@@ -26,7 +26,7 @@
                 "${input:command}"
             ],
             "env": {
-                "FILE_TRANSFER_CLI_CERTIFICATE_PATH": "../../x509/ca-cert.pem",
+                "DFS_CLI_CERTIFICATE_PATH": "../../x509/ca-cert.pem",
             }
         }
     ],

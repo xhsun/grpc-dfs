@@ -11,7 +11,7 @@ import (
 
 func main() {
 	var config config.Config
-	configPath, exist := os.LookupEnv("FILE_TRANSFER_SERVER_CONFIG_PATH")
+	configPath, exist := os.LookupEnv("DFS_SERVER_CONFIG_PATH")
 	if !exist {
 		configPath = "config/config.json"
 	}
