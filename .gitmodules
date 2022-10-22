@@ -1,0 +1,6 @@
+[submodule "go-server"]
+	path = go-server
+	url = git@github.com:xhsun/grpc-dfs-go-server.git
+[submodule "go-client"]
+	path = go-client
+	url = git@github.com:xhsun/grpc-dfs-go-client.git
